@@ -2,15 +2,16 @@ const router = require('express').Router();
 const { Post } = require('../../models/');
 const withAuth = require('../../utils/auth');
 
+// post method to allow user to add data
 router.post('/', withAuth, async (req, res) => {
+  // creates variable for req.body
   const body = req.body;
-
+  // create method adding a new post to the Post model
   try {
     const newPost = await Post.create({
-      // TODO: POST BODY SENT IN REQUEST. HINT USING SPREAD 
-
-      // TODO: SET USERID userId TO LOGGEDIN USERID
-
+      ...req.body,
+      // allows logged in user to post
+      user_id: req.session.user_id
     });
     res.json(newPost);
   } catch (err) {
@@ -18,11 +19,15 @@ router.post('/', withAuth, async (req, res) => {
   }
 });
 
+// with PUT request with a single id 
 router.put('/:id', withAuth, async (req, res) => {
   try {
     const [affectedRows] = await Post.update(req.body, {
-      // TODO: SET ID TO ID PARAMETER INSIDE WHERE CLAUSE CONDITION FIELD
-
+      // setting a parameter to set where to update post and only when user is logged in 
+      where: {
+        id: req.params.id,
+        user_id: req.session.user_id,
+      }
     });
 
     if (affectedRows > 0) {
@@ -35,11 +40,16 @@ router.put('/:id', withAuth, async (req, res) => {
   }
 });
 
+// DELETE request for a single ID
 router.delete('/:id', withAuth, async (req, res) => {
   try {
+    // with destroy method, the post from the Post table is deleted
     const [affectedRows] = Post.destroy({
-      // TODO: SET ID TO ID PARAMETER INSIDE WHERE CLAUSE CONDITION FIELD
-
+      // setting a parameter to set where to destroy post and only when user is logged in 
+      where: {
+        id: req.params.id,
+        user_id: req.session.user_id,
+      }
     });
 
     if (affectedRows > 0) {
