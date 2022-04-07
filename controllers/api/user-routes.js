@@ -13,7 +13,6 @@ router.post('/', async (req, res) => {
     });
 
     // in session
-    // {}
     // { "userId":"1"}
     req.session.save(() => {
       // sets user id in request session from the database

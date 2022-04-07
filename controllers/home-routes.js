@@ -37,15 +37,17 @@ router.get('/post/:id', async (req, res) => {
   }
 });
 
+// gets user to the login page
 router.get('/login', (req, res) => {
   if (req.session.loggedIn) {
     res.redirect('/');
     return;
   }
-
+  // renders the login page
   res.render('login');
 });
 
+// gets user to the signup page 
 router.get('/signup', (req, res) => {
   if (req.session.loggedIn) {
     res.redirect('/');
